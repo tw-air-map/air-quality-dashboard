@@ -8,32 +8,84 @@
         body { font-family: 'Microsoft JhengHei', sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; height: 100vh; display: flex; flex-direction: column; }
         .header { background-color: #2c3e50; color: white; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; }
         .header h1 { margin: 0; font-size: 1.5rem; }
-        .tabs { display: flex; overflow-x: auto; background-color: #34495e; padding-top: 5px; scrollbar-width: thin; }
-        .tab-btn { background-color: #2c3e50; color: #bdc3c7; border: none; padding: 10px 20px; margin: 0 5px 0 0; cursor: pointer; border-radius: 5px 5px 0 0; white-space: nowrap; transition: background-color 0.3s; font-size: 14px; }
-        .tab-btn:hover { background-color: #3d566e; color: white; }
-        .tab-btn.active { background-color: #ecf0f1; color: #2c3e50; font-weight: bold; }
         .iframe-container { flex-grow: 1; position: relative; width: 100%; }
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         .iframe-wrapper { display: none; width: 100%; height: 100%; }
         .iframe-wrapper.active { display: block; }
+
+        /* ===== 可收合的月曆日期選單 ===== */
+        .header { position: relative; z-index: 100; }
+        .header .cal-panel { left: auto; right: 0; }
+        .date-picker { position: relative; display: inline-block; }
+        .cal-toggle {
+            font-size: 14px; padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px;
+            background: #fff; cursor: pointer; color: #333; font-family: inherit;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .cal-toggle:hover { border-color: #999; }
+        .cal-toggle .arrow { font-size: 10px; color: #666; transition: transform 0.2s; }
+        .date-picker.open .cal-toggle .arrow { transform: rotate(180deg); }
+        .cal-panel {
+            display: none; position: absolute; top: calc(100% + 8px); left: 0; width: 264px;
+            background: #fff; border-radius: 4px; padding: 10px; color: #333;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.65); border: 2px solid rgba(0,0,0,0.2);
+            z-index: 10000; font-family: 'Microsoft JhengHei', sans-serif;
+        }
+        .date-picker.open .cal-panel { display: block; }
+        .cal-head { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+        .cal-head select {
+            flex: 1; font-size: 13px; padding: 3px 4px; border: 1px solid #ccc; border-radius: 4px;
+            background: #fff; cursor: pointer; font-family: inherit;
+        }
+        .cal-nav {
+            width: 28px; height: 28px; border: 1px solid #ccc; border-radius: 4px;
+            background: #fff; cursor: pointer; font-size: 16px; line-height: 1; color: #333;
+        }
+        .cal-nav:hover { background: #f0f0f0; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+        .cal-dow { font-size: 12px; color: #888; padding: 4px 0; }
+        .cal-day {
+            font-size: 13px; height: 30px; border: none; border-radius: 4px; background: none;
+            color: #c4c4c4; font-family: inherit; padding: 0;
+        }
+        .cal-day.has-data { color: #1a5fb4; font-weight: bold; background: #e8f0fe; cursor: pointer; }
+        .cal-day.has-data:hover { background: #c9dcfc; }
+        .cal-day.selected, .cal-day.selected:hover { background: #1a5fb4; color: #fff; }
+        .cal-day.today { outline: 1px dashed #999; outline-offset: -2px; }
+        .cal-list { margin-top: 8px; border-top: 1px solid #eee; padding-top: 6px; }
+        .cal-list-title { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .cal-list button {
+            display: block; width: 100%; text-align: left; font-size: 12px; padding: 4px 6px; margin-bottom: 2px;
+            border: 1px solid #ddd; border-radius: 4px; background: #fafafa; cursor: pointer;
+            font-family: inherit; color: #333; word-break: break-all;
+        }
+        .cal-list button:hover { background: #e8f0fe; }
+        .cal-list button.selected { background: #1a5fb4; color: #fff; border-color: #1a5fb4; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>空氣品質地圖儀表板</h1>
-    </div>
-    
-    <div class="tabs" id="tabs-container">
-        <button class="tab-btn active" onclick="openTab('整合地圖_全測項_Dashboard_20261015.html')">2026-10-15</button>
-        <button class="tab-btn" onclick="openTab('整合地圖_全測項_Dashboard_20261014.html')">2026-10-14</button>
-        <button class="tab-btn" onclick="openTab('整合地圖_全測項_Dashboard_20261013.html')">2026-10-13</button>
-        <button class="tab-btn" onclick="openTab('整合地圖_全測項_Dashboard_20261012.html')">2026-10-12</button>
-        <button class="tab-btn" onclick="openTab('整合地圖_全測項_Dashboard_20261011.html')">2026-10-11</button>
-        <button class="tab-btn" onclick="openTab('整合地圖_全測項_Dashboard_20261010.html')">2026-10-10</button>
+        <!-- 可收合的月曆日期選單 -->
+        <div class="date-picker" id="date-picker">
+            <button type="button" class="cal-toggle" id="cal-toggle">
+                <span>📅</span><span id="cal-toggle-text"></span><span class="arrow">▼</span>
+            </button>
+            <div class="cal-panel" id="cal-panel"></div>
+        </div>
     </div>
     
     <div class="iframe-container">
-        <div id="整合地圖_全測項_Dashboard_20261015.html" class="iframe-wrapper active">
+        <div id="整合地圖_全測項_Dashboard_20261018.html" class="iframe-wrapper active">
+            <iframe src="maps/整合地圖_全測項_Dashboard_20261018.html"></iframe>
+        </div>
+        <div id="整合地圖_全測項_Dashboard_20261017.html" class="iframe-wrapper">
+            <iframe src="maps/整合地圖_全測項_Dashboard_20261017.html"></iframe>
+        </div>
+        <div id="整合地圖_全測項_Dashboard_20261016.html" class="iframe-wrapper">
+            <iframe src="maps/整合地圖_全測項_Dashboard_20261016.html"></iframe>
+        </div>
+        <div id="整合地圖_全測項_Dashboard_20261015.html" class="iframe-wrapper">
             <iframe src="maps/整合地圖_全測項_Dashboard_20261015.html"></iframe>
         </div>
         <div id="整合地圖_全測項_Dashboard_20261014.html" class="iframe-wrapper">
@@ -51,24 +103,186 @@
         <div id="整合地圖_全測項_Dashboard_20261010.html" class="iframe-wrapper">
             <iframe src="maps/整合地圖_全測項_Dashboard_20261010.html"></iframe>
         </div>
+        <div id="整合地圖_全測項_Dashboard_20261009.html" class="iframe-wrapper">
+            <iframe src="maps/整合地圖_全測項_Dashboard_20261009.html"></iframe>
+        </div>
     </div>
 
     <script>
-        function openTab(tabId) {
-            // 隱藏所有 iframe
-            const wrappers = document.querySelectorAll('.iframe-wrapper');
-            wrappers.forEach(w => w.classList.remove('active'));
-            
-            // 取消所有按鈕的 active 狀態
-            const btns = document.querySelectorAll('.tab-btn');
-            btns.forEach(b => b.classList.remove('active'));
-            
-            // 顯示選取的 iframe
-            document.getElementById(tabId).classList.add('active');
-            
-            // 將點擊的按鈕設為 active
-            event.currentTarget.classList.add('active');
+
+(function () {
+    var FILES = [{"name": "整合地圖_全測項_Dashboard_20261018.html", "iso": "2026-10-18"}, {"name": "整合地圖_全測項_Dashboard_20261017.html", "iso": "2026-10-17"}, {"name": "整合地圖_全測項_Dashboard_20261016.html", "iso": "2026-10-16"}, {"name": "整合地圖_全測項_Dashboard_20261015.html", "iso": "2026-10-15"}, {"name": "整合地圖_全測項_Dashboard_20261014.html", "iso": "2026-10-14"}, {"name": "整合地圖_全測項_Dashboard_20261013.html", "iso": "2026-10-13"}, {"name": "整合地圖_全測項_Dashboard_20261012.html", "iso": "2026-10-12"}, {"name": "整合地圖_全測項_Dashboard_20261011.html", "iso": "2026-10-11"}, {"name": "整合地圖_全測項_Dashboard_20261010.html", "iso": "2026-10-10"}, {"name": "整合地圖_全測項_Dashboard_20261009.html", "iso": "2026-10-09"}];
+    var WEEK = ['日', '一', '二', '三', '四', '五', '六'];
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function esc(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // 依日期分組 (同一天若有多個檔案會列出供選擇)；無法辨識日期者放入「其他檔案」
+    var dateMap = {}, others = [];
+    FILES.forEach(function (f) {
+        var ok = false;
+        if (f.iso) {
+            var p = f.iso.split('-');
+            var d = new Date(+p[0], +p[1] - 1, +p[2]);
+            ok = d.getFullYear() === +p[0] && d.getMonth() === +p[1] - 1 && d.getDate() === +p[2];
         }
+        if (ok) { (dateMap[f.iso] = dateMap[f.iso] || []).push(f); } else { others.push(f); }
+    });
+
+    var picker = document.getElementById('date-picker');
+    var toggle = document.getElementById('cal-toggle');
+    var toggleText = document.getElementById('cal-toggle-text');
+    var panel = document.getElementById('cal-panel');
+
+    var today = new Date();
+    var current = FILES.length ? FILES[0] : null;
+    var pendingIso = null;
+    var viewYear = today.getFullYear(), viewMonth = today.getMonth();
+    var minYear = viewYear, maxYear = viewYear;
+
+    function syncView(f) {
+        if (f && f.iso && dateMap[f.iso]) {
+            var p = f.iso.split('-');
+            viewYear = +p[0];
+            viewMonth = +p[1] - 1;
+        }
+    }
+    syncView(current);
+    Object.keys(dateMap).forEach(function (iso) {
+        var y = +iso.slice(0, 4);
+        if (y < minYear) minYear = y;
+        if (y > maxYear) maxYear = y;
+    });
+    if (viewYear < minYear) minYear = viewYear;
+    if (viewYear > maxYear) maxYear = viewYear;
+
+    function labelOf(f) {
+        return (f.iso && dateMap[f.iso] && dateMap[f.iso].length === 1) ? f.iso : f.name;
+    }
+
+    function render() {
+        var h = '<div class="cal-head">';
+        h += '<button type="button" class="cal-nav" data-nav="-1" aria-label="上個月">&#8249;</button>';
+        h += '<select data-role="year">';
+        for (var y = minYear; y <= maxYear; y++) {
+            h += '<option value="' + y + '"' + (y === viewYear ? ' selected' : '') + '>' + y + ' 年</option>';
+        }
+        h += '</select><select data-role="month">';
+        for (var m = 0; m < 12; m++) {
+            h += '<option value="' + m + '"' + (m === viewMonth ? ' selected' : '') + '>' + (m + 1) + ' 月</option>';
+        }
+        h += '</select>';
+        h += '<button type="button" class="cal-nav" data-nav="1" aria-label="下個月">&#8250;</button></div>';
+
+        h += '<div class="cal-grid">';
+        WEEK.forEach(function (w) { h += '<div class="cal-dow">' + w + '</div>'; });
+        var first = new Date(viewYear, viewMonth, 1).getDay();
+        var days = new Date(viewYear, viewMonth + 1, 0).getDate();
+        for (var i = 0; i < first; i++) h += '<span></span>';
+        var todayIso = today.getFullYear() + '-' + pad(today.getMonth() + 1) + '-' + pad(today.getDate());
+        for (var d = 1; d <= days; d++) {
+            var iso = viewYear + '-' + pad(viewMonth + 1) + '-' + pad(d);
+            var has = !!dateMap[iso];
+            var cls = 'cal-day' + (has ? ' has-data' : '') + (current && current.iso === iso ? ' selected' : '') + (iso === todayIso ? ' today' : '');
+            h += '<button type="button" class="' + cls + '"' + (has ? ' data-iso="' + iso + '"' : ' disabled') + '>' + d + '</button>';
+        }
+        h += '</div>';
+
+        if (pendingIso && dateMap[pendingIso]) {
+            h += '<div class="cal-list"><div class="cal-list-title">' + pendingIso + ' 有多個檔案，請選擇：</div>';
+            dateMap[pendingIso].forEach(function (f) {
+                h += '<button type="button" data-name="' + esc(f.name) + '"' + (current && current.name === f.name ? ' class="selected"' : '') + '>' + esc(f.name) + '</button>';
+            });
+            h += '</div>';
+        }
+        if (others.length) {
+            h += '<div class="cal-list"><div class="cal-list-title">其他檔案 (無法辨識日期)：</div>';
+            others.forEach(function (f) {
+                h += '<button type="button" data-name="' + esc(f.name) + '"' + (current && current.name === f.name ? ' class="selected"' : '') + '>' + esc(f.name) + '</button>';
+            });
+            h += '</div>';
+        }
+        panel.innerHTML = h;
+    }
+
+    function setOpen(open) {
+        if (open) {
+            picker.classList.add('open');
+        } else {
+            picker.classList.remove('open');
+            pendingIso = null;
+        }
+    }
+
+    // 切換顯示的地圖 (保留原本函式名稱)
+    window.openTab = function (tabId) {
+        var wrappers = document.querySelectorAll('.iframe-wrapper');
+        wrappers.forEach(function (w) { w.classList.remove('active'); });
+        var target = document.getElementById(tabId);
+        if (target) target.classList.add('active');
+        FILES.forEach(function (f) { if (f.name === tabId) current = f; });
+        syncView(current);
+        toggleText.textContent = current ? labelOf(current) : '';
+        pendingIso = null;
+        render();
+        setOpen(false);
+    };
+
+    toggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (picker.classList.contains('open')) {
+            setOpen(false);
+        } else {
+            syncView(current);
+            render();
+            setOpen(true);
+        }
+    });
+
+    panel.addEventListener('click', function (e) {
+        var t = e.target.closest ? e.target.closest('button') : null;
+        if (!t || t.disabled) return;
+        if (t.getAttribute('data-nav')) {
+            viewMonth += parseInt(t.getAttribute('data-nav'), 10);
+            if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+            if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+            if (viewYear < minYear) minYear = viewYear;
+            if (viewYear > maxYear) maxYear = viewYear;
+            pendingIso = null;
+            render();
+        } else if (t.getAttribute('data-iso')) {
+            var iso = t.getAttribute('data-iso');
+            if (dateMap[iso].length === 1) {
+                window.openTab(dateMap[iso][0].name);
+            } else {
+                pendingIso = iso;
+                render();
+            }
+        } else if (t.getAttribute('data-name')) {
+            window.openTab(t.getAttribute('data-name'));
+        }
+    });
+
+    panel.addEventListener('change', function (e) {
+        var role = e.target.getAttribute('data-role');
+        if (role === 'year') viewYear = parseInt(e.target.value, 10);
+        if (role === 'month') viewMonth = parseInt(e.target.value, 10);
+        pendingIso = null;
+        render();
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!picker.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setOpen(false);
+    });
+
+    toggleText.textContent = current ? labelOf(current) : '';
+    render();
+})();
+
     </script>
 </body>
 </html>
