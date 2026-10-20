@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>空氣品質地圖整合面板</title>
     <style>
-        body { font-family: 'Microsoft JhengHei', sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; height: 100vh; display: flex; flex-direction: column; }
-        .header { background-color: #2c3e50; color: white; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; }
-        .header h1 { margin: 0; font-size: 1.5rem; }
-        .iframe-container { flex-grow: 1; position: relative; width: 100%; }
+        body { font-family: 'Microsoft JhengHei', sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; height: 100vh; overflow: hidden; }
+        .iframe-container { width: 100vw; height: 100vh; position: relative; }
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         .iframe-wrapper { display: none; width: 100%; height: 100%; }
         .iframe-wrapper.active { display: block; }
+        /* 備用日期選單：只有舊版網頁（沒有新選單）才會顯示 */
+        .floating-control { position: absolute; top: 15px; left: 25%; transform: translateX(-50%); background-color: white; padding: 8px 12px; border-radius: 4px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.65); border: 2px solid rgba(0,0,0,0.2); z-index: 9999; display: flex; align-items: center; }
+        .floating-control label { font-weight: bold; margin-right: 8px; color: #333; font-size: 14px; }
 
         /* ===== 可收合的月曆日期選單 ===== */
         .header { position: relative; z-index: 100; }
@@ -64,54 +66,58 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>空氣品質地圖儀表板</h1>
-        <!-- 可收合的月曆日期選單 -->
-        <div class="date-picker" id="date-picker">
-            <button type="button" class="cal-toggle" id="cal-toggle">
-                <span>📅</span><span id="cal-toggle-text"></span><span class="arrow">▼</span>
-            </button>
-            <div class="cal-panel" id="cal-panel"></div>
-        </div>
-    </div>
-    
     <div class="iframe-container">
-        <div id="整合地圖_全測項_Dashboard_20261018.html" class="iframe-wrapper active">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261018.html"></iframe>
+        <div id="w0" class="iframe-wrapper active">
+            <iframe id="f0" data-src="maps/整合地圖_全測項_Dashboard_20261019.html" allow="display-capture"></iframe>
         </div>
-        <div id="整合地圖_全測項_Dashboard_20261017.html" class="iframe-wrapper">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261017.html"></iframe>
+        <div id="w1" class="iframe-wrapper">
+            <iframe id="f1" data-src="maps/整合地圖_全測項_Dashboard_20261018.html" allow="display-capture"></iframe>
         </div>
-        <div id="整合地圖_全測項_Dashboard_20261016.html" class="iframe-wrapper">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261016.html"></iframe>
+        <div id="w2" class="iframe-wrapper">
+            <iframe id="f2" data-src="maps/整合地圖_全測項_Dashboard_20261017.html" allow="display-capture"></iframe>
         </div>
-        <div id="整合地圖_全測項_Dashboard_20261015.html" class="iframe-wrapper">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261015.html"></iframe>
+        <div id="w3" class="iframe-wrapper">
+            <iframe id="f3" data-src="maps/整合地圖_全測項_Dashboard_20261016.html" allow="display-capture"></iframe>
         </div>
-        <div id="整合地圖_全測項_Dashboard_20261014.html" class="iframe-wrapper">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261014.html"></iframe>
+        <div id="w4" class="iframe-wrapper">
+            <iframe id="f4" data-src="maps/整合地圖_全測項_Dashboard_20261015.html" allow="display-capture"></iframe>
         </div>
-        <div id="整合地圖_全測項_Dashboard_20261013.html" class="iframe-wrapper">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261013.html"></iframe>
+        <div id="w5" class="iframe-wrapper">
+            <iframe id="f5" data-src="maps/整合地圖_全測項_Dashboard_20261014.html" allow="display-capture"></iframe>
         </div>
-        <div id="整合地圖_全測項_Dashboard_20261012.html" class="iframe-wrapper">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261012.html"></iframe>
+        <div id="w6" class="iframe-wrapper">
+            <iframe id="f6" data-src="maps/整合地圖_全測項_Dashboard_20261013.html" allow="display-capture"></iframe>
         </div>
-        <div id="整合地圖_全測項_Dashboard_20261011.html" class="iframe-wrapper">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261011.html"></iframe>
+        <div id="w7" class="iframe-wrapper">
+            <iframe id="f7" data-src="maps/整合地圖_全測項_Dashboard_20261012.html" allow="display-capture"></iframe>
         </div>
-        <div id="整合地圖_全測項_Dashboard_20261010.html" class="iframe-wrapper">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261010.html"></iframe>
+        <div id="w8" class="iframe-wrapper">
+            <iframe id="f8" data-src="maps/整合地圖_全測項_Dashboard_20261011.html" allow="display-capture"></iframe>
         </div>
-        <div id="整合地圖_全測項_Dashboard_20261009.html" class="iframe-wrapper">
-            <iframe src="maps/整合地圖_全測項_Dashboard_20261009.html"></iframe>
+        <div id="w9" class="iframe-wrapper">
+            <iframe id="f9" data-src="maps/整合地圖_全測項_Dashboard_20261010.html" allow="display-capture"></iframe>
+        </div>
+        <div id="w10" class="iframe-wrapper">
+            <iframe id="f10" data-src="maps/整合地圖_全測項_Dashboard_20261009.html" allow="display-capture"></iframe>
+        </div>
+        <div id="w11" class="iframe-wrapper">
+            <iframe id="f11" data-src="maps/整合地圖_全測項_Dashboard_20261008.html" allow="display-capture"></iframe>
+        </div>
+        <div class="floating-control" id="legacy-ctl" style="display:none">
+            <label for="cal-toggle">切換日期：</label>
+            <div class="date-picker" id="date-picker">
+                <button type="button" class="cal-toggle" id="cal-toggle">
+                    <span>📅</span><span id="cal-toggle-text"></span><span class="arrow">▼</span>
+                </button>
+                <div class="cal-panel" id="cal-panel"></div>
+            </div>
         </div>
     </div>
 
     <script>
 
 (function () {
-    var FILES = [{"name": "整合地圖_全測項_Dashboard_20261018.html", "iso": "2026-10-18"}, {"name": "整合地圖_全測項_Dashboard_20261017.html", "iso": "2026-10-17"}, {"name": "整合地圖_全測項_Dashboard_20261016.html", "iso": "2026-10-16"}, {"name": "整合地圖_全測項_Dashboard_20261015.html", "iso": "2026-10-15"}, {"name": "整合地圖_全測項_Dashboard_20261014.html", "iso": "2026-10-14"}, {"name": "整合地圖_全測項_Dashboard_20261013.html", "iso": "2026-10-13"}, {"name": "整合地圖_全測項_Dashboard_20261012.html", "iso": "2026-10-12"}, {"name": "整合地圖_全測項_Dashboard_20261011.html", "iso": "2026-10-11"}, {"name": "整合地圖_全測項_Dashboard_20261010.html", "iso": "2026-10-10"}, {"name": "整合地圖_全測項_Dashboard_20261009.html", "iso": "2026-10-09"}];
+    var FILES = [{"name": "整合地圖_全測項_Dashboard_20261019.html", "iso": "2026-10-19", "idx": 0}, {"name": "整合地圖_全測項_Dashboard_20261018.html", "iso": "2026-10-18", "idx": 1}, {"name": "整合地圖_全測項_Dashboard_20261017.html", "iso": "2026-10-17", "idx": 2}, {"name": "整合地圖_全測項_Dashboard_20261016.html", "iso": "2026-10-16", "idx": 3}, {"name": "整合地圖_全測項_Dashboard_20261015.html", "iso": "2026-10-15", "idx": 4}, {"name": "整合地圖_全測項_Dashboard_20261014.html", "iso": "2026-10-14", "idx": 5}, {"name": "整合地圖_全測項_Dashboard_20261013.html", "iso": "2026-10-13", "idx": 6}, {"name": "整合地圖_全測項_Dashboard_20261012.html", "iso": "2026-10-12", "idx": 7}, {"name": "整合地圖_全測項_Dashboard_20261011.html", "iso": "2026-10-11", "idx": 8}, {"name": "整合地圖_全測項_Dashboard_20261010.html", "iso": "2026-10-10", "idx": 9}, {"name": "整合地圖_全測項_Dashboard_20261009.html", "iso": "2026-10-09", "idx": 10}, {"name": "整合地圖_全測項_Dashboard_20261008.html", "iso": "2026-10-08", "idx": 11}];
     var WEEK = ['日', '一', '二', '三', '四', '五', '六'];
     function pad(n) { return (n < 10 ? '0' : '') + n; }
     function esc(s) {
@@ -217,10 +223,7 @@
 
     // 切換顯示的地圖 (保留原本函式名稱)
     window.openTab = function (tabId) {
-        var wrappers = document.querySelectorAll('.iframe-wrapper');
-        wrappers.forEach(function (w) { w.classList.remove('active'); });
-        var target = document.getElementById(tabId);
-        if (target) target.classList.add('active');
+        if (window.__activate) { window.__activate(tabId, null); }
         FILES.forEach(function (f) { if (f.name === tabId) current = f; });
         syncView(current);
         toggleText.textContent = current ? labelOf(current) : '';
@@ -281,6 +284,49 @@
 
     toggleText.textContent = current ? labelOf(current) : '';
     render();
+})();
+
+    </script>
+    <script>
+
+(function () {
+    var FILES = [{"name": "整合地圖_全測項_Dashboard_20261019.html", "iso": "2026-10-19", "idx": 0}, {"name": "整合地圖_全測項_Dashboard_20261018.html", "iso": "2026-10-18", "idx": 1}, {"name": "整合地圖_全測項_Dashboard_20261017.html", "iso": "2026-10-17", "idx": 2}, {"name": "整合地圖_全測項_Dashboard_20261016.html", "iso": "2026-10-16", "idx": 3}, {"name": "整合地圖_全測項_Dashboard_20261015.html", "iso": "2026-10-15", "idx": 4}, {"name": "整合地圖_全測項_Dashboard_20261014.html", "iso": "2026-10-14", "idx": 5}, {"name": "整合地圖_全測項_Dashboard_20261013.html", "iso": "2026-10-13", "idx": 6}, {"name": "整合地圖_全測項_Dashboard_20261012.html", "iso": "2026-10-12", "idx": 7}, {"name": "整合地圖_全測項_Dashboard_20261011.html", "iso": "2026-10-11", "idx": 8}, {"name": "整合地圖_全測項_Dashboard_20261010.html", "iso": "2026-10-10", "idx": 9}, {"name": "整合地圖_全測項_Dashboard_20261009.html", "iso": "2026-10-09", "idx": 10}, {"name": "整合地圖_全測項_Dashboard_20261008.html", "iso": "2026-10-08", "idx": 11}];
+    var frames = {}, wraps = {}, ready = {}, pending = {}, timer = null;
+    FILES.forEach(function (f) { frames[f.name] = document.getElementById('f' + f.idx); wraps[f.name] = document.getElementById('w' + f.idx); });
+    var legacy = document.getElementById('legacy-ctl');
+    function showLegacy(on) { if (legacy) { legacy.style.display = on ? 'flex' : 'none'; } }
+    function post(fr, msg) { try { fr.contentWindow.postMessage(msg, '*'); } catch (e) {} }
+    function activate(name, state) {
+        var fr = frames[name]; if (!fr) { return; }
+        FILES.forEach(function (f) { wraps[f.name].classList.toggle('active', f.name === name); });
+        if (!fr.getAttribute('src')) {                       // 第一次用到這一天：才載入
+            pending[name] = state || null;
+            fr.setAttribute('src', fr.getAttribute('data-src'));
+        } else if (ready[name]) {                            // 已載入：把狀態傳過去並通知「重新顯示」
+            post(fr, {type: 'dash-apply', state: state || null});
+            post(fr, {type: 'dash-shown'});
+        } else {
+            pending[name] = state || null;
+        }
+        clearTimeout(timer);
+        if (ready[name]) { showLegacy(false); }
+        else { timer = setTimeout(function () { if (!ready[name]) { showLegacy(true); } }, 3500); }   // 舊版網頁沒有新選單 → 顯示舊月曆
+    }
+    window.__activate = activate;
+    window.addEventListener('message', function (e) {
+        var d = e.data; if (!d || typeof d !== 'object') { return; }
+        var name = null;
+        FILES.forEach(function (f) { if (frames[f.name].contentWindow === e.source) { name = f.name; } });
+        if (!name) { return; }
+        if (d.type === 'dash-ready') {                       // 新版網頁載入完成 → 給它日期清單與（換日期時）上一天的狀態
+            ready[name] = true; showLegacy(false);
+            post(frames[name], {type: 'dash-init', files: FILES.map(function (f) { return {name: f.name, iso: f.iso}; }), name: name, state: pending[name] || null});
+            pending[name] = null;
+        } else if (d.type === 'dash-goto') {                 // 新版選單的月曆點了別天
+            activate(d.name, d.state);
+        }
+    });
+    if (FILES.length) { activate(FILES[0].name, null); }
 })();
 
     </script>
